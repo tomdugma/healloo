@@ -27,6 +27,13 @@
     caret: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9.5l6 5.5 6-5.5"/></svg>',
     image: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="5" width="17.2" height="14" rx="3"/><circle cx="8.6" cy="10" r="1.5"/><path d="M4.4 17l5-5 4.4 4.4 2.6-2.4 4 3.6"/></svg>',
     sparkle: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l1.7 5.6L19 9.5l-5.3 1.9L12 17l-1.7-5.6L5 9.5l5.3-1.9z"/><path d="M18.6 14.2l.8 2.3 2.2.8-2.2.8-.8 2.3-.8-2.3-2.2-.8 2.2-.8z"/></svg>',
+    bookmark: '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M6.5 4h11v16l-5.5-4-5.5 4z"/></svg>',
+    bookmarkOn: '<svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor"><path d="M6.5 4h11v16l-5.5-4-5.5 4z"/></svg>',
+    cal: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.6" y="5" width="16.8" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.6 10h16.8"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+    send: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10.5 13.5M21 3l-6.8 18-3.7-7.5L3 10.1z"/></svg>',
+    heartLine: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.4l-1.4-1.3C5.6 14.6 3 12.2 3 9.2A4.6 4.6 0 0 1 7.6 4.6c1.7 0 3.3.8 4.4 2.1a5.7 5.7 0 0 1 4.4-2.1A4.6 4.6 0 0 1 21 9.2c0 3-2.6 5.4-7.6 9.9z"/></svg>',
+    heartFill: '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 20.4l-1.4-1.3C5.6 14.6 3 12.2 3 9.2A4.6 4.6 0 0 1 7.6 4.6c1.7 0 3.3.8 4.4 2.1a5.7 5.7 0 0 1 4.4-2.1A4.6 4.6 0 0 1 21 9.2c0 3-2.6 5.4-7.6 9.9z"/></svg>',
     logo: '<svg viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B7BF0"/><stop offset=".55" stop-color="#A98BE8"/><stop offset="1" stop-color="#E3A9CF"/></linearGradient></defs><circle cx="32" cy="32" r="23" fill="none" stroke="url(#lg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="118 40" transform="rotate(-40 32 32)"/></svg>'
   };
 
@@ -71,7 +78,11 @@
     calDay: 1,
     sos: null,
     promptIdx: 0,
-    bannerOpen: true
+    bannerOpen: true,
+    vod: 0,
+    saved: false,
+    liked: {},
+    extraReplies: []
   };
 
   var app = document.getElementById('app');
@@ -95,7 +106,7 @@
     var t = [
       { k: 'heart', l: 'Me heart', on: true, go: 'home' },
       { k: 'play', l: 'VOD', go: null },
-      { k: 'people', l: 'Community', go: null },
+      { k: 'people', l: 'Community', go: 'community' },
       { k: 'session', l: 'Session', go: null }
     ];
     return '<nav class="tabbar">' + t.map(function (x) {
@@ -135,7 +146,7 @@
     var ctaGo = card.kind === 'progress' ? 'tasks' : card.go;
 
     var vod = D.vod.slice(0, 2).map(function (v, i) {
-      return '<button class="vod a-' + v.art + '" data-act="soon" data-label="' + v.title + '">' +
+      return '<button class="vod a-' + v.art + '" data-act="open-vod" data-i="' + i + '">' +
         '<span class="chip">' + I[v.icon] + v.tag + '</span>' +
         (v.locked ? '<span class="lock">' + I.lock + '</span>' : '<span></span>') +
         '<span class="len">' + v.len + '</span></button>';
@@ -147,7 +158,7 @@
       '<div class="carousel" id="carousel">' + heroes + '</div>' +
       '<div class="dots">' + D.cards.map(function (_, i) { return '<i class="' + (i === S.hero ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
       '<div class="pad"><button class="btn" data-go="' + ctaGo + '">' + card.cta + '</button>' +
-      '<div class="sect"><h4>VOD</h4><a href="#" data-act="soon" data-label="VOD library">See All</a></div>' +
+      '<div class="sect"><h4>VOD</h4><a href="#" data-act="open-vod" data-i="2">See All</a></div>' +
       '<div class="vod-row">' + vod + '</div><div style="height:18px"></div></div>' +
       '</div>' + tabbar() + '</section>';
   };
@@ -352,6 +363,67 @@
       '<div style="height:20px"></div></div></section>';
   };
 
+  V.voddetail = function () {
+    var v = D.vod[S.vod], c = D.courses[v.course];
+    var paras = c.body.map(function (t, i) {
+      return '<p class="course-body' + (i === c.body.length - 1 ? ' fade' : '') + '">' + esc(t) + '</p>';
+    }).join('');
+    return '<section class="screen">' +
+      appbar({ back: true, title: 'VOD', right: '<button data-act="bookmark" aria-label="Save for later">' + (S.saved ? I.bookmarkOn : I.bookmark) + '</button>' }) +
+      '<div class="scroll pad">' +
+      '<div class="brandline"><span class="logo"></span><b>' + c.brand + '</b></div>' +
+      '<h3 class="course-title">' + esc(c.title) + '</h3>' +
+      '<p class="course-meta">' + I.cal + c.days + '</p>' +
+      paras +
+      '<div class="paywall"><button class="btn" data-act="buy">Get a Program</button>' +
+      '<button class="price" data-act="buy">' + c.price + '</button></div><div style="height:16px"></div>' +
+      '</div>' + tabbar() + '</section>';
+  };
+
+  function avaColor(name) {
+    var h = 0;
+    for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 360;
+    return 'linear-gradient(150deg,hsl(' + h + ' 62% 68%),hsl(' + ((h + 40) % 360) + ' 58% 52%))';
+  }
+  function ava(name, small) {
+    return '<span class="ava' + (small ? ' s' : '') + '" style="background:' + avaColor(name) + '">' +
+      name.charAt(0) + '</span>';
+  }
+  function reactions(key, base) {
+    var on = !!S.liked[key], n = base + (on ? 1 : 0);
+    return '<div class="react"><button class="like' + (on ? ' on' : '') + '" data-act="like" data-k="' + key + '">' +
+      (on ? I.heartFill : I.heartLine) + n + '</button>' +
+      '<button class="reply" data-act="reply-to" data-n="' + key + '">Reply</button></div>';
+  }
+
+  V.community = function () {
+    var t = D.thread, p = t.post;
+    var post = '<div class="post"><div class="who-row">' + ava(p.author) +
+      '<span class="nm"><b>' + p.author + '</b><span class="' + (p.active ? 'live' : '') + '">' +
+      (p.active ? 'Active' : p.ago) + '</span></span>' +
+      '<button data-act="soon" data-label="Post options" style="color:var(--muted)">' + I.dots + '</button></div>' +
+      '<p class="body-t">' + esc(p.text) + '</p>' +
+      '<div class="post-art"><span class="flower"></span></div>' +
+      reactions('post', p.likes) + '</div>';
+
+    var all = t.replies.concat(S.extraReplies);
+    var replies = all.map(function (r, i) {
+      var mention = r.mention ? '<span class="mention">' + r.mention + '</span> ' : '';
+      return '<div class="reply-item"><div class="who-row">' + ava(r.author, true) +
+        '<span class="nm"><b>' + r.author + '</b><span>' + r.ago + '</span></span>' +
+        '<button data-act="soon" data-label="Reply options" style="color:var(--muted)">' + I.dots + '</button></div>' +
+        '<p class="body-t">' + mention + esc(r.text) + '</p>' + reactions('r' + i, r.likes) + '</div>';
+    }).join('');
+
+    return '<section class="screen">' +
+      appbar({ back: true, title: t.title }) +
+      '<div class="scroll pad">' + post + replies + '<div style="height:12px"></div></div>' +
+      '<div class="composer"><button class="plus" data-act="soon" data-label="Attachments">' + I.plus + '</button>' +
+      '<input id="composer" placeholder="Write a reply" autocomplete="off">' +
+      '<button class="send" data-act="send" aria-label="Send">' + I.send + '</button></div>' +
+      '</section>';
+  };
+
   /* ---------- router ---------- */
   function render() {
     app.innerHTML = V[S.screen]();
@@ -457,6 +529,23 @@
     }
     if (a === 'sos') { S.sos = +el.dataset.i; return render(); }
     if (a === 'another') return toast('Looking for another community member...');
+    if (a === 'open-vod') { S.vod = +el.dataset.i; return go('voddetail'); }
+    if (a === 'bookmark') { S.saved = !S.saved; render(); return toast(S.saved ? 'Saved for later' : 'Removed from saved'); }
+    if (a === 'buy') return toast('Payment is not part of this prototype');
+    if (a === 'like') { S.liked[el.dataset.k] = !S.liked[el.dataset.k]; return render(); }
+    if (a === 'reply-to') {
+      var box = document.getElementById('composer');
+      if (box) { box.focus(); }
+      return;
+    }
+    if (a === 'send') {
+      var inp = document.getElementById('composer');
+      var txt = inp && inp.value.trim();
+      if (!txt) { if (inp) inp.focus(); return; }
+      S.extraReplies.push({ author: 'You', ago: 'now', likes: 0, text: txt });
+      render();
+      return toast('Posted to the thread');
+    }
   });
 
   document.addEventListener('keydown', function (e) {

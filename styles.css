@@ -30,7 +30,7 @@
   --shadow-card:0 10px 30px rgba(84,60,140,.10);
   --shadow-phone:0 40px 90px rgba(60,40,110,.28);
 
-  --font-ui:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-ui:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -516,4 +516,79 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   .notch{display:none}
   .statusbar{padding-top:env(safe-area-inset-top,0px);height:calc(46px + env(safe-area-inset-top,0px))}
   .homebar{display:none}
+}
+
+/* ===== VOD detail ===== */
+.brandline{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.brandline .logo{
+  width:30px;height:30px;border-radius:50%;flex:0 0 auto;
+  background:conic-gradient(from 210deg,#7B5BE8,#E85B9E,#F2A65B,#5BC7E8,#7B5BE8);
+}
+.brandline b{font-family:var(--font-ui);font-weight:600;font-size:.74rem;letter-spacing:.06em;color:var(--ink)}
+.course-title{
+  margin:0 0 8px;font-family:var(--font-ui);font-weight:600;font-size:1.16rem;line-height:1.3;
+  letter-spacing:-.01em;color:var(--ink);text-wrap:balance;
+}
+.course-meta{display:flex;align-items:center;gap:7px;font-size:.74rem;color:var(--muted);font-family:var(--font-ui)}
+.course-body{margin:16px 0 0;font-size:.84rem;line-height:1.62;color:var(--ink-2)}
+.course-body.fade{
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 30%,transparent 92%);
+          mask-image:linear-gradient(180deg,#000 0%,#000 30%,transparent 92%);
+  color:var(--muted);
+}
+.paywall{padding-top:14px}
+.paywall .price{
+  display:block;width:100%;text-align:center;margin-top:10px;
+  font-family:var(--font-ui);font-weight:500;font-size:.76rem;color:var(--brand);
+}
+
+/* ===== community thread ===== */
+.post{padding:14px 0 10px;border-bottom:1px solid var(--line)}
+.who-row{display:flex;align-items:flex-start;gap:10px}
+.ava{
+  width:34px;height:34px;border-radius:50%;flex:0 0 auto;overflow:hidden;
+  display:grid;place-items:center;font-family:var(--font-ui);font-weight:600;font-size:.76rem;color:#fff;
+}
+.ava.s{width:28px;height:28px;font-size:.66rem}
+.who-row .nm{flex:1;min-width:0}
+.who-row .nm b{display:block;font-family:var(--font-ui);font-weight:600;font-size:.82rem;color:var(--ink)}
+.who-row .nm span{font-size:.64rem;color:var(--muted)}
+.who-row .nm span.live{color:#2E9E62}
+.post p.body-t{margin:10px 0 0;font-size:.84rem;line-height:1.55;color:var(--ink-2)}
+.post-art{
+  margin-top:12px;border-radius:14px;height:210px;overflow:hidden;position:relative;
+  background:#F4F1FB;display:grid;place-items:center;
+}
+.post-art .flower{
+  width:190px;height:190px;border-radius:50%;
+  background:conic-gradient(#E8355B,#F2A03C,#EFE04A,#5FC65F,#3FB8C8,#4B6BE8,#8B4BE8,#E8355B);
+  filter:saturate(1.1);position:relative;
+  -webkit-mask:radial-gradient(circle at 50% 50%,#000 12%,rgba(0,0,0,.92) 26%,#000 62%,transparent 71%);
+          mask:radial-gradient(circle at 50% 50%,#000 12%,rgba(0,0,0,.92) 26%,#000 62%,transparent 71%);
+}
+.post-art .flower::after{
+  content:"";position:absolute;inset:0;
+  background:repeating-conic-gradient(rgba(255,255,255,.34) 0deg 3deg,rgba(255,255,255,0) 3deg 9deg);
+}
+.react{display:flex;align-items:center;gap:8px;margin-top:11px}
+.react .like{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.74rem;font-family:var(--font-ui)}
+.react .like.on{color:#E8355B}
+.react .reply{margin-left:auto;font-family:var(--font-ui);font-weight:500;font-size:.76rem;color:var(--muted)}
+.reply-item{padding:12px 0 10px;border-bottom:1px solid var(--line)}
+.reply-item:last-child{border-bottom:0}
+.mention{color:var(--brand);font-weight:500}
+.composer{
+  flex:0 0 auto;display:flex;align-items:center;gap:9px;
+  padding:10px 14px calc(14px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);background:var(--app);
+}
+.composer .plus{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+.composer input{
+  flex:1;min-width:0;height:38px;border-radius:99px;border:1px solid var(--line);background:#F7F5FC;
+  padding:0 14px;font-family:var(--font-body);font-size:.82rem;color:var(--ink);
+}
+.composer input:focus{outline:none;border-color:var(--brand-soft);background:#fff}
+.composer .send{
+  width:38px;height:38px;border-radius:12px;background:var(--brand);color:#fff;
+  display:grid;place-items:center;flex:0 0 auto;
 }
