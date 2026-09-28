@@ -45,7 +45,8 @@
 }
 
 *{box-sizing:border-box}
-body{
+html{height:100%}
+body{height:100%;
   margin:0;
   background:linear-gradient(160deg,var(--page),var(--page-2));
   color:var(--page-ink);
@@ -56,13 +57,15 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
 
-/* ===== stage ===== */
+/* ===== stage =====
+   Fluid by default: the app fills whatever viewport it is given, capped to a
+   phone-width column. The device frame only appears on a roomy desktop window. */
 .stage{
-  min-height:100%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  padding:28px 16px 40px;
+  height:100%;min-height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:0;
 }
-.stage-head{text-align:center;max-width:32rem}
+.stage-head{display:none;text-align:center;max-width:32rem}
 .stage-head h1{
   font-family:var(--font-ui);font-weight:600;letter-spacing:-.02em;
   font-size:1.5rem;margin:0 0 6px;text-wrap:balance;
@@ -73,36 +76,36 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   color:var(--brand);background:var(--brand-soft);padding:3px 9px;border-radius:999px;
 }
 
-/* ===== phone frame ===== */
+/* ===== phone ===== */
 .phone{
   position:relative;
-  width:390px;height:844px;max-width:100%;
-  background:var(--frame);
-  border-radius:54px;padding:11px;
-  box-shadow:var(--shadow-phone);
-  flex:0 0 auto;
+  width:min(100%,460px);height:100%;
+  flex:1 1 auto;min-height:0;
+  background:none;border-radius:0;padding:0;box-shadow:none;
 }
 .phone-screen{
   position:relative;overflow:hidden;
   width:100%;height:100%;
-  border-radius:44px;
+  border-radius:0;
   background:var(--app);
   display:flex;flex-direction:column;
   font-family:var(--font-body);color:var(--ink);
 }
 .notch{
+  display:none;
   position:absolute;top:0;left:50%;transform:translateX(-50%);
   width:126px;height:32px;background:var(--frame);border-radius:0 0 20px 20px;z-index:40;
 }
 .statusbar{
   position:relative;z-index:30;flex:0 0 auto;
   height:46px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 26px 0 30px;font-family:var(--font-ui);font-weight:600;font-size:.83rem;
-  color:var(--ink);
+  padding:env(safe-area-inset-top,0px) 22px 0 24px;font-family:var(--font-ui);font-weight:600;font-size:.83rem;
+  color:var(--ink);height:calc(46px + env(safe-area-inset-top,0px));
 }
 .statusbar.on-dark{color:#fff}
 .statusbar .sb-right{display:flex;align-items:center;gap:5px}
 .homebar{
+  display:none;
   position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
   width:134px;height:5px;border-radius:99px;background:currentColor;opacity:.85;z-index:40;
   color:#1B1630;pointer-events:none;
@@ -507,17 +510,6 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* ===== small screens: drop the frame ===== */
-@media (max-width:460px){
-  .stage{padding:0;gap:0;justify-content:flex-start}
-  .stage-head{display:none}
-  .phone{width:100%;height:100dvh;border-radius:0;padding:0;box-shadow:none}
-  .phone-screen{border-radius:0}
-  .notch{display:none}
-  .statusbar{padding-top:env(safe-area-inset-top,0px);height:calc(46px + env(safe-area-inset-top,0px))}
-  .homebar{display:none}
-}
-
 /* ===== VOD detail ===== */
 .brandline{display:flex;align-items:center;gap:9px;margin-bottom:12px}
 .brandline .logo{
@@ -591,4 +583,20 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .composer .send{
   width:38px;height:38px;border-radius:12px;background:var(--brand);color:#fff;
   display:grid;place-items:center;flex:0 0 auto;
+}
+
+
+/* ===== device frame, roomy desktop windows only ===== */
+@media (min-width:900px) and (min-height:900px){
+  .stage{gap:22px;padding:28px 16px 40px}
+  .stage-head{display:block}
+  .phone{
+    width:390px;height:844px;flex:0 0 auto;
+    background:var(--frame);border-radius:54px;padding:11px;
+    box-shadow:var(--shadow-phone);
+  }
+  .phone-screen{border-radius:44px}
+  .notch{display:block}
+  .homebar{display:block}
+  .statusbar{padding-top:0;height:46px}
 }
