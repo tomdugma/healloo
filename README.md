@@ -3,6 +3,8 @@
 Clickable prototype of the Healloo mobile app, built from the Figma screens.
 Plain HTML, CSS and JavaScript — no build step, no backend, no dependencies.
 
+**Live:** https://tomdugma.github.io/healloo/
+
 ## Run it
 
 Open `index.html` in a browser, or serve the folder:
