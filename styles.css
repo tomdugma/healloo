@@ -113,9 +113,14 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .homebar.on-dark{color:#fff}
 
 /* ===== screen shell ===== */
-#app{flex:1;min-height:0;display:flex}
-.screen{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--app)}
-.scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+/* min-width:0 all the way down: without it these flex items refuse to shrink
+   below the carousel's min-content width and spill past the screen. */
+#app{flex:1;min-height:0;min-width:0;width:100%;display:flex;overflow:hidden}
+.screen{
+  flex:1 1 auto;min-height:0;min-width:0;width:100%;overflow:hidden;
+  display:flex;flex-direction:column;background:var(--app);
+}
+.scroll{flex:1;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .scroll::-webkit-scrollbar{width:0}
 .pad{padding:0 18px}
 .appbar{
@@ -133,11 +138,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 /* ===== bottom tabs ===== */
 .tabbar{
-  flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);
+  flex:0 0 auto;min-width:0;display:grid;grid-template-columns:repeat(4,1fr);
   padding:10px 8px calc(22px + env(safe-area-inset-bottom,0px));
   border-top:1px solid var(--line);background:var(--app);
 }
-.tab{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:.66rem;font-family:var(--font-ui);font-weight:500}
+.tab{min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:.66rem;font-family:var(--font-ui);font-weight:500}
 .tab svg{width:22px;height:22px}
 .tab.is-on{color:var(--brand)}
 
@@ -179,6 +184,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .carousel{
   display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
   padding:0 18px 4px;scrollbar-width:none;
+  max-width:100%;min-width:0;
 }
 .carousel::-webkit-scrollbar{display:none}
 .hero{
